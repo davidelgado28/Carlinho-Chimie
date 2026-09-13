@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carlinho Chimie</title>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #121412;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            padding: 20px;
+            background-color: #1a1e1a;
+            border-bottom: 2px solid #2e7d32;
+            text-align: center;
+        }
+        h1 {
+            color: #4caf50;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background-color: #161a16;
+        }
+        nav button {
+            padding: 10px 18px;
+            background-color: #1f261f;
+            color: #a5d6a7;
+            border: 1px solid #2e7d32;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        nav button.active {
+            background-color: #2e7d32;
+            color: #ffffff;
+        }
+        main {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .module {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            background-color: #181c18;
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid #2e7d32;
+        }
+        .module.active {
+            display: block;
+        }
+        input, select {
+            padding: 10px;
+            background-color: #121412;
+            color: #ffffff;
+            border: 1px solid #388e3c;
+            border-radius: 4px;
+            outline: none;
+        }
+        canvas {
+            width: 100% !important;
+            height: 380px !important;
+            background-color: #0d0f0d;
+            border-radius: 6px;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a5d6a7;
+        }
+        .instruction-tag {
+            font-size: 0.85rem;
+            color: #81c784;
+            margin-bottom: 10px;
+        }
+    </style>
+    <style>
+        .module-layout {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .module-panel {
+            flex: 1;
+            background-color: #1a1e1a;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #255d28;
+        }
+        
+        .periodic-table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, 1fr);
+            gap: 3px;
+            min-width: 800px;
+        }
+        .pt-element {
+            background-color: #1f261f;
+            border: 1px solid #388e3c;
+            padding: 8px 2px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+        .pt-element:hover, .pt-element.active-el {
+            background-color: #2e7d32;
+            color: white;
+            transform: scale(1.1);
+        }
+        .pt-symbol { font-weight: bold; font-size: 1.1rem; }
+        .pt-number { font-size: 0.65rem; color: #a5d6a7; }
+        .btn-action {
+            background-color: #388e3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .btn-action:hover { background-color: #4caf50; }
+        
+        .ph-tube-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 250px;
+            margin: 20px 0;
+        }
+        .ph-tube {
+            width: 60px;
+            height: 220px;
+            border: 4px solid #fff;
+            border-top: none;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(255,255,255,0.05);
+        }
+        .ph-liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 85%;
+            background-color: #388e3c; 
+            transition: background-color 0.5s ease;
+        }
+
+        .equation-box {
+            background: #121412;
+            padding: 10px;
+            border-left: 4px solid #4caf50;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .equation-actions button {
+            background: #1f261f; border: 1px solid #388e3c; color: #fff; padding: 4px 8px; cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+            }
+            nav button {
+                width: 100%;
+            }
+            .module-layout {
+                flex-direction: column;
+            }
+            .equation-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            canvas {
+                height: 250px !important;
+            }
+        }
+    </style>
