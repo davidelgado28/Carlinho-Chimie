@@ -208,3 +208,681 @@
             }
         }
     </style>
+</head>
+<body>
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Plugin();
+    </script>
+
+    <header>
+        <h1>Universo da Química</h1>
+    </header>
+
+    <nav aria-label="Navegação dos Módulos">
+        <button class="active" data-target="mod-atom">Modelo Atômico</button>
+        <button data-target="mod-geo">Geometria Molecular</button>
+        <button data-target="mod-entalpia">Entalpia</button>
+        <button data-target="mod-ph">pH</button>
+        <button data-target="mod-hess">Lei de Hess</button>
+        <button data-target="mod-periodica">Tabela Periódica</button>
+        <button data-target="mod-mols">Mols e Estequiometria</button>
+        <button data-target="mod-sandbox">Misturas (Sandbox)</button>
+    </nav>
+    <main>
+        <div id="mod-atom" class="module active">
+            <h2>Simulador de Modelos Atômicos</h2>
+            <p class="instruction-tag">Selecione o modelo histórico. No modelo de Bohr, clique no canvas para excitar um elétron.</p>
+            <div class="module-layout">
+                <div class="module-panel" style="flex: 0.3;">
+                    <div class="control-group">
+                        <label for="select-atom">Escolha o Modelo:</label>
+                        <select id="select-atom" style="width: 100%;">
+                            <option value="dalton">Dalton (Bola de Bilhar)</option>
+                            <option value="thomson">Thomson (Pudim de Passas)</option>
+                            <option value="rutherford">Rutherford (Planetário)</option>
+                            <option value="bohr" selected>Bohr (Níveis de Energia)</option>
+                        </select>
+                    </div>
+                    <div id="atom-desc" style="font-size: 0.9rem; margin-top: 15px;"></div>
+                </div>
+                <div class="module-panel">
+                    <canvas id="canvas-atom"></canvas>
+                </div>
+            </div>
+        </div>
+        <div id="mod-geo" class="module">
+            <h2>📐 Geometria Molecular</h2>
+            <p class="instruction-tag">Visualize as disposições espaciais e os ângulos das ligações químicas.</p>
+            <div class="module-layout">
+                <div class="module-panel" style="flex: 0.3;">
+                    <div class="control-group">
+                        <label for="select-geo">Geometria:</label>
+                        <select id="select-geo" style="width: 100%;">
+                            <option value="linear">Linear (180°)</option>
+                            <option value="angular">Angular (104.5°)</option>
+                            <option value="trigonal">Trigonal Plana (120°)</option>
+                            <option value="piramidal">Piramidal (107°)</option>
+                            <option value="tetraedrica" selected>Tetraédrica (109.5°)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="module-panel">
+                    <canvas id="canvas-geo"></canvas>
+                </div>
+            </div>
+        </div>
+        <div id="mod-entalpia" class="module">
+            <h2>🌡️ Calculadora de Entalpia (ΔH)</h2>
+            <p class="instruction-tag">Insira as energias para desenhar o gráfico do caminho da reação.</p>
+            <div class="module-layout">
+                <div class="module-panel" style="flex: 0.3;">
+                    <div class="control-group">
+                        <label>Entalpia Reagentes (kJ):</label>
+                        <input type="number" id="hr-input" value="100" style="width: 100%;">
+                    </div>
+                    <div class="control-group">
+                        <label>Entalpia Produtos (kJ):</label>
+                        <input type="number" id="hp-input" value="250" style="width: 100%;">
+                    </div>
+                    <h3 id="dh-result" style="color: #4caf50; margin-top: 10px;">ΔH = +150 kJ</h3>
+                    <p id="dh-type" style="color: #ff9800; font-weight: bold;">Reação Endotérmica</p>
+                </div>
+                <div class="module-panel">
+                    <canvas id="canvas-entalpia"></canvas>
+                </div>
+            </div>
+        </div>
+        <div id="mod-ph" class="module">
+            <h2>Calculadora e Escala de pH</h2>
+            <p class="instruction-tag">Arraste a barra para alterar o nível de pH do tubo de ensaio.</p>
+            <div class="module-layout">
+                <div class="module-panel" style="flex: 1;">
+                    <div class="control-group" style="text-align: center;">
+                        <label>Valor do pH: <span id="ph-val-display" style="font-size: 1.5em; font-weight: bold; color: #fff;">7.0</span></label>
+                        <input type="range" id="ph-slider" min="0" max="14" step="0.1" value="7" style="width: 80%; cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; width: 80%; margin: 0 auto; color: #81c784; font-size: 0.8rem;">
+                            <span>0 (Ácido)</span>
+                            <span>7 (Neutro)</span>
+                            <span>14 (Básico)</span>
+                        </div>
+                    </div>
+                    <div class="ph-tube-container">
+                        <div class="ph-tube">
+                            <div id="ph-liquid" class="ph-liquid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="mod-hess" class="module">
+            <h2>Calculadora da Lei de Hess</h2>
+            <p class="instruction-tag">Manipule as equações intermediárias para obter a equação global.</p>
+            <div class="module-layout">
+                <div class="module-panel">
+                    <h3 style="margin-bottom: 15px; color:#fff;">Objetivo: C(graf) + 1/2 O₂(g) ➔ CO(g)</h3>
+                    
+                    <div class="equation-box">
+                        <div>
+                            <span style="color:#a5d6a7; font-weight:bold;">Eq I:</span> 
+                            <span id="eq1-text">C(graf) + O₂(g) ➔ CO₂(g)</span>
+                            <div style="color: #ffb74d;">ΔH = <span id="eq1-dh">-393.5</span> kJ</div>
+                        </div>
+                        <div class="equation-actions">
+                            <button onclick="hessHnd.invert(1)">Inverter</button>
+                            <button onclick="hessHnd.mult(1, 2)">x2</button>
+                            <button onclick="hessHnd.mult(1, 0.5)">/2</button>
+                        </div>
+                    </div>
+
+                    <div class="equation-box">
+                        <div>
+                            <span style="color:#a5d6a7; font-weight:bold;">Eq II:</span> 
+                            <span id="eq2-text">CO(g) + 1/2 O₂(g) ➔ CO₂(g)</span>
+                            <div style="color: #ffb74d;">ΔH = <span id="eq2-dh">-283.0</span> kJ</div>
+                        </div>
+                        <div class="equation-actions">
+                            <button onclick="hessHnd.invert(2)">Inverter</button>
+                            <button onclick="hessHnd.mult(2, 2)">x2</button>
+                            <button onclick="hessHnd.mult(2, 0.5)">/2</button>
+                        </div>
+                    </div>
+
+                    <div style="background: #2e7d32; padding: 15px; border-radius: 4px; text-align: center;">
+                        <h3>Equação Global (Soma):</h3>
+                        <p id="hess-global-eq" style="font-size: 1.2rem; margin: 10px 0;">C(graf) + O₂(g) + CO(g) + 1/2 O₂(g) ➔ 2 CO₂(g)</p>
+                        <h2 style="color: #ffeb3b;">ΔH Global = <span id="hess-global-dh">-676.5</span> kJ</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="mod-periodica" class="module">
+            <h2>Tabela Periódica Interativa</h2>
+            <p class="instruction-tag">Clique em um elemento para ver seus detalhes estruturais.</p>
+            
+            <div class="periodic-table-wrapper">
+                <div class="periodic-table" id="pt-grid">
+                </div>
+            </div>
+
+            <div class="module-panel" style="text-align: center; min-height: 120px;">
+                <h3 id="pt-detail-name" style="color: #4caf50;">Selecione um elemento</h3>
+                <p id="pt-detail-info" style="margin-top: 10px;">Aqui aparecerão os detalhes: Número atômico, Massa, Distribuição e Família.</p>
+            </div>
+        </div>
+        <div id="mod-mols" class="module">
+            <h2>Calculadora de Estequiometria</h2>
+            <p class="instruction-tag">Digite a fórmula química (ex: H2O, CO2, NaCl, C6H12O6) respeitando maiúsculas e minúsculas.</p>
+            <div class="module-layout">
+                <div class="module-panel" style="flex: 0.4;">
+                    <div class="control-group">
+                        <label>Fórmula Química:</label>
+                        <input type="text" id="mol-formula" value="H2O" style="width: 100%;">
+                    </div>
+                    <div style="background:#121412; padding:10px; border-radius:4px;">
+                        <h4 style="color:#a5d6a7;">Massa Molar:</h4>
+                        <p><span id="mol-mass-display" style="font-size:1.5rem; font-weight:bold; color:#fff;">18.00</span> g/mol</p>
+                    </div>
+                </div>
+                <div class="module-panel">
+                    <div class="control-group">
+                        <label>Massa na amostra (g):</label>
+                        <input type="number" id="mol-gramas" value="18" style="width: 100%;">
+                    </div>
+                    <div class="control-group">
+                        <label>Quantidade de Mols:</label>
+                        <input type="number" id="mol-mols" value="1" style="width: 100%;">
+                    </div>
+                    <div class="control-group">
+                        <label>Número de Moléculas (Aprox.):</label>
+                        <input type="text" id="mol-molecs" value="6.022e+23" style="width: 100%;" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mod-sandbox" class="module">
+            <h2>Sandbox Químico (Béquer Virtual)</h2>
+            <p class="instruction-tag">Adicione substâncias ao béquer para ver interações, misturas homogêneas, heterogêneas ou reações.</p>
+            <div class="module-layout">
+                <div class="module-panel" style="flex: 0.3;">
+                    <div class="control-group">
+                        <label>Adicionar Reagente:</label>
+                        <select id="sb-select" style="width: 100%; margin-bottom: 10px;">
+                            <option value="agua">Água (H₂O)</option>
+                            <option value="oleo">Óleo</option>
+                            <option value="alcool">Álcool (Etanol)</option>
+                            <option value="sal">Sal (NaCl)</option>
+                            <option value="hcl">Ácido Clorídrico (HCl)</option>
+                            <option value="naoh">Hidróxido de Sódio (NaOH)</option>
+                        </select>
+                        <button class="btn-action" onclick="sandboxHnd.add()" style="width: 100%;">+ Adicionar ao Béquer</button>
+                        <button class="btn-action" onclick="sandboxHnd.clear()" style="width: 100%; background:#d32f2f; margin-top:10px;">Esvaziar Béquer</button>
+                    </div>
+                    <div style="background:#121412; padding:10px; border-radius:4px; font-size: 0.85rem;">
+                        <h4 style="color:#a5d6a7; margin-bottom: 5px;">Conteúdo Atual:</h4>
+                        <ul id="sb-list" style="list-style: none;">Nenhum</ul>
+                    </div>
+                </div>
+                <div class="module-panel" style="position: relative;">
+                    <canvas id="canvas-sandbox"></canvas>
+                    <div id="sb-status" style="position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.7); padding:10px; border-radius:4px; color:#fff;">
+                        Vazio
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        document.querySelectorAll('nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+                
+                btn.classList.add('active');
+                const target = document.getElementById(btn.getAttribute('data-target'));
+                target.classList.add('active');
+
+                window.dispatchEvent(new Event('resize'));
+            });
+        });
+
+        function resizeCanvas(canvas) {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = 380;
+        }
+
+        const atomCanvas = document.getElementById('canvas-atom');
+        const atomCtx = atomCanvas.getContext('2d');
+        const atomSelect = document.getElementById('select-atom');
+        const atomDesc = document.getElementById('atom-desc');
+        
+        let electrons = [];
+        let photons = [];
+        for(let i=0; i<8; i++) {
+            electrons.push({ angle: Math.random()*Math.PI*2, orbit: (i<2)?1:2, speed: 0.02 - (i*0.001) });
+        }
+
+        const descriptions = {
+            dalton: "<b>Dalton (1808):</b> Átomo como uma esfera maciça, indivisível e indestrutível.",
+            thomson: "<b>Thomson (1897):</b> Átomo esférico positivo com elétrons negativos incrustados (Pudim de passas).",
+            rutherford: "<b>Rutherford (1911):</b> Núcleo pequeno, denso e positivo, com elétrons girando ao redor na eletrosfera (Modelo planetário).",
+            bohr: "<b>Bohr (1913):</b> Elétrons em órbitas circulares quantizadas. Clique para fazer um elétron saltar e emitir energia (fóton)."
+        };
+
+        function drawAtom() {
+            if(!atomCanvas.offsetParent) return requestAnimationFrame(drawAtom); 
+            resizeCanvas(atomCanvas);
+            const w = atomCanvas.width;
+            const h = atomCanvas.height;
+            const cx = w/2;
+            const cy = h/2;
+            const model = atomSelect.value;
+            atomDesc.innerHTML = descriptions[model];
+
+            atomCtx.clearRect(0, 0, w, h);
+
+            if (model === 'dalton') {
+                atomCtx.beginPath();
+                atomCtx.arc(cx, cy, 60, 0, Math.PI*2);
+                atomCtx.fillStyle = '#795548';
+                atomCtx.fill();
+            } 
+            else if (model === 'thomson') {
+                atomCtx.beginPath();
+                atomCtx.arc(cx, cy, 80, 0, Math.PI*2);
+                atomCtx.fillStyle = 'rgba(233, 30, 99, 0.4)';
+                atomCtx.fill();
+                atomCtx.fillStyle = '#2196f3';
+                const pos = [[-40,-30],[40,-20],[-20,40],[30,30],[0,0]];
+                pos.forEach(p => {
+                    atomCtx.beginPath();
+                    atomCtx.arc(cx + p[0], cy + p[1], 8, 0, Math.PI*2);
+                    atomCtx.fill();
+                });
+            }
+            else if (model === 'rutherford' || model === 'bohr') {
+                atomCtx.beginPath();
+                atomCtx.arc(cx, cy, 12, 0, Math.PI*2);
+                atomCtx.fillStyle = '#f44336';
+                atomCtx.fill();
+                
+                const orbits = [50, 100, 150];
+                atomCtx.strokeStyle = 'rgba(255,255,255,0.2)';
+                atomCtx.lineWidth = 1;
+                
+                if (model === 'bohr') {
+                    orbits.forEach(r => {
+                        atomCtx.beginPath();
+                        atomCtx.arc(cx, cy, r, 0, Math.PI*2);
+                        atomCtx.stroke();
+                    });
+                }
+                atomCtx.fillStyle = '#00bcd4';
+                electrons.forEach(e => {
+                    if(model === 'bohr') {
+                        e.angle += e.speed;
+                        const r = orbits[e.orbit-1];
+                        const x = cx + Math.cos(e.angle) * r;
+                        const y = cy + Math.sin(e.angle) * r;
+                        atomCtx.beginPath();
+                        atomCtx.arc(x, y, 6, 0, Math.PI*2);
+                        atomCtx.fill();
+                    } else {
+                        e.angle += e.speed * 3;
+                        const r = orbits[1] + Math.sin(e.angle)*20;
+                        const x = cx + Math.cos(e.angle) * r;
+                        const y = cy + Math.sin(e.angle*1.5) * r;
+                        atomCtx.beginPath();
+                        atomCtx.arc(x, y, 5, 0, Math.PI*2);
+                        atomCtx.fill();
+                    }
+                });
+
+                if(model === 'bohr') {
+                    for(let i=photons.length-1; i>=0; i--){
+                        let p = photons[i];
+                        p.x += p.vx; p.y += p.vy; p.life--;
+                        atomCtx.beginPath();
+                        atomCtx.arc(p.x, p.y, 4, 0, Math.PI*2);
+                        atomCtx.fillStyle = `rgba(255, 235, 59, ${p.life/50})`;
+                        atomCtx.fill();
+                        if(p.life <= 0) photons.splice(i, 1);
+                    }
+                }
+            }
+            requestAnimationFrame(drawAtom);
+        }
+
+        atomCanvas.addEventListener('click', (e) => {
+            if(atomSelect.value === 'bohr' && electrons.length > 0) {
+                let el = electrons[Math.floor(Math.random()*electrons.length)];
+                const oldOrbit = el.orbit;
+                el.orbit = (el.orbit === 3) ? 1 : el.orbit + 1;
+                
+                const w = atomCanvas.width;
+                const h = atomCanvas.height;
+                const r = [50, 100, 150][oldOrbit-1];
+                const x = w/2 + Math.cos(el.angle) * r;
+                const y = h/2 + Math.sin(el.angle) * r;
+                photons.push({ x: x, y: y, vx: (x-w/2)*0.05, vy: (y-h/2)*0.05, life: 50 });
+            }
+        });
+        drawAtom();
+
+        const geoCanvas = document.getElementById('canvas-geo');
+        const geoCtx = geoCanvas.getContext('2d');
+        const geoSelect = document.getElementById('select-geo');
+
+        function drawGeometry() {
+            resizeCanvas(geoCanvas);
+            const w = geoCanvas.width, h = geoCanvas.height;
+            const cx = w/2, cy = h/2;
+            geoCtx.clearRect(0, 0, w, h);
+
+            const type = geoSelect.value;
+            geoCtx.lineWidth = 4;
+            geoCtx.strokeStyle = '#e0e0e0';
+            geoCtx.fillStyle = '#4caf50'; 
+            geoCtx.font = "14px Arial";
+
+            const drawBond = (angle, length, txt) => {
+                const x = cx + Math.cos(angle) * length;
+                const y = cy + Math.sin(angle) * length;
+                geoCtx.beginPath(); geoCtx.moveTo(cx, cy); geoCtx.lineTo(x, y); geoCtx.stroke();
+                geoCtx.beginPath(); geoCtx.arc(x, y, 15, 0, Math.PI*2); geoCtx.fill();
+                if(txt) { geoCtx.fillStyle = "#fff"; geoCtx.fillText(txt, cx + Math.cos(angle)*(length/2), cy + Math.sin(angle)*(length/2) - 10); geoCtx.fillStyle = '#4caf50'; }
+            }
+
+            if (type === 'linear') {
+                drawBond(0, 100); drawBond(Math.PI, 100, "180°");
+            } else if (type === 'angular') {
+                drawBond(Math.PI/4, 100); drawBond(Math.PI*3/4, 100, "104.5°");
+            } else if (type === 'trigonal') {
+                drawBond(-Math.PI/2, 100); drawBond(Math.PI/6, 100); drawBond(Math.PI*5/6, 100, "120°");
+            } else if (type === 'piramidal') {
+                drawBond(Math.PI/6, 100); drawBond(Math.PI*5/6, 100, "107°"); 
+                geoCtx.lineWidth = 2; geoCtx.setLineDash([5, 5]); drawBond(-Math.PI/2, 60); geoCtx.setLineDash([]);
+            } else if (type === 'tetraedrica') {
+                drawBond(-Math.PI/2, 90); drawBond(Math.PI/6, 100); drawBond(Math.PI*5/6, 100, "109.5°");
+                geoCtx.lineWidth = 2; geoCtx.setLineDash([5, 5]); drawBond(Math.PI/2, 60); geoCtx.setLineDash([]);
+            }
+
+            geoCtx.beginPath(); geoCtx.arc(cx, cy, 25, 0, Math.PI*2);
+            geoCtx.fillStyle = '#f44336'; geoCtx.fill();
+        }
+        geoSelect.addEventListener('change', drawGeometry);
+        window.addEventListener('resize', drawGeometry);
+        setTimeout(drawGeometry, 100);
+
+        const entCanvas = document.getElementById('canvas-entalpia');
+        const entCtx = entCanvas.getContext('2d');
+        const hrIn = document.getElementById('hr-input');
+        const hpIn = document.getElementById('hp-input');
+        const dhRes = document.getElementById('dh-result');
+        const dhType = document.getElementById('dh-type');
+
+        function drawEnthalpy() {
+            resizeCanvas(entCanvas);
+            const w = entCanvas.width, h = entCanvas.height;
+            const hr = parseFloat(hrIn.value) || 0;
+            const hp = parseFloat(hpIn.value) || 0;
+            const dh = hp - hr;
+
+            dhRes.innerText = `ΔH = ${(dh > 0 ? '+' : '')}${dh} kJ`;
+            dhType.innerText = dh > 0 ? "Reação Endotérmica (Absorve calor)" : (dh < 0 ? "Reação Exotérmica (Libera calor)" : "Equilíbrio");
+            dhType.style.color = dh > 0 ? "#2196f3" : "#f44336";
+
+            entCtx.clearRect(0, 0, w, h);
+            entCtx.strokeStyle = "#fff"; entCtx.lineWidth = 2;
+            entCtx.beginPath(); entCtx.moveTo(40, 20); entCtx.lineTo(40, h-30); entCtx.lineTo(w-20, h-30); entCtx.stroke();
+            entCtx.fillStyle = "#fff"; entCtx.font = "12px Arial";
+            entCtx.fillText("Energia", 5, 15); entCtx.fillText("Caminho da Reação", w/2, h-10);
+
+            const maxE = Math.max(hr, hp) + 100;
+            const minE = Math.min(hr, hp, 0);
+            const range = maxE - minE || 1;
+            const mapY = (val) => (h-30) - ((val - minE) / range) * (h-60);
+
+            const yR = mapY(hr);
+            const yP = mapY(hp);
+            const yPeak = mapY(Math.max(hr, hp) + 50); 
+
+            entCtx.beginPath();
+            entCtx.moveTo(40, yR);
+            entCtx.lineTo(w*0.3, yR);
+            entCtx.quadraticCurveTo(w*0.5, yPeak - 50, w*0.7, yP);
+            entCtx.lineTo(w-20, yP);
+            entCtx.strokeStyle = dh > 0 ? "#2196f3" : "#f44336";
+            entCtx.lineWidth = 3;
+            entCtx.stroke();
+            entCtx.fillStyle = "#a5d6a7";
+            entCtx.fillText(`Hr (${hr})`, 50, yR - 10);
+            entCtx.fillText(`Hp (${hp})`, w-70, yP - 10);
+        }
+        hrIn.addEventListener('input', drawEnthalpy);
+        hpIn.addEventListener('input', drawEnthalpy);
+        window.addEventListener('resize', drawEnthalpy);
+
+        const phSlider = document.getElementById('ph-slider');
+        const phVal = document.getElementById('ph-val-display');
+        const phLiquid = document.getElementById('ph-liquid');
+
+        function updatePH() {
+            const val = parseFloat(phSlider.value);
+            phVal.innerText = val.toFixed(1);
+            
+            let hue;
+            if(val <= 7) {
+                hue = (val / 7) * 120; 
+            } else {
+                hue = 120 + ((val - 7) / 7) * 150; 
+            }
+            phLiquid.style.backgroundColor = `hsl(${hue}, 80%, 50%)`;
+        }
+        phSlider.addEventListener('input', updatePH);
+
+        const hessHnd = {
+            eqs: [
+                { fwd: "C(graf) + O₂(g) ➔ CO₂(g)", rev: "CO₂(g) ➔ C(graf) + O₂(g)", dhBase: -393.5, mult: 1, inv: false },
+                { fwd: "CO(g) + 1/2 O₂(g) ➔ CO₂(g)", rev: "CO₂(g) ➔ CO(g) + 1/2 O₂(g)", dhBase: -283.0, mult: 1, inv: false }
+            ],
+            update() {
+                let sumDH = 0;
+                let finalReactants = [];
+                let finalProducts = [];
+
+                this.eqs.forEach((eq, i) => {
+                    const dh = eq.dhBase * eq.mult * (eq.inv ? -1 : 1);
+                    sumDH += dh;
+                    document.getElementById(`eq${i+1}-text`).innerText = (eq.inv ? eq.rev : eq.fwd) + (eq.mult !== 1 ? ` (x${eq.mult})` : '');
+                    document.getElementById(`eq${i+1}-dh`).innerText = dh.toFixed(1);
+
+                    let left = eq.inv ? eq.rev.split('➔')[0] : eq.fwd.split('➔')[0];
+                    let right = eq.inv ? eq.rev.split('➔')[1] : eq.fwd.split('➔')[1];
+                    finalReactants.push(left.trim());
+                    finalProducts.push(right.trim());
+                });
+
+                document.getElementById('hess-global-dh').innerText = sumDH.toFixed(1);
+                document.getElementById('hess-global-eq').innerText = 
+                    finalReactants.join(' + ').replace(/\+ \+/g, '+') + " ➔ " + finalProducts.join(' + ').replace(/\+ \+/g, '+');
+            },
+            invert(idx) { this.eqs[idx-1].inv = !this.eqs[idx-1].inv; this.update(); },
+            mult(idx, val) { this.eqs[idx-1].mult = (this.eqs[idx-1].mult === val) ? 1 : val; this.update(); }
+        };
+        hessHnd.update();
+
+ 
+        const ptData = [
+            { z: 1, sym: 'H', name: 'Hidrogênio', mass: 1.008, conf: '1s¹', fam: 'Não-metal', col: 1, row: 1 },
+            { z: 2, sym: 'He', name: 'Hélio', mass: 4.002, conf: '1s²', fam: 'Gás Nobre', col: 18, row: 1 },
+            { z: 3, sym: 'Li', name: 'Lítio', mass: 6.94, conf: '[He] 2s¹', fam: 'Metal Alcalino', col: 1, row: 2 },
+            { z: 4, sym: 'Be', name: 'Berílio', mass: 9.012, conf: '[He] 2s²', fam: 'Alcalinoterroso', col: 2, row: 2 },
+            { z: 5, sym: 'B', name: 'Boro', mass: 10.81, conf: '[He] 2s² 2p¹', fam: 'Semimetal', col: 13, row: 2 },
+            { z: 6, sym: 'C', name: 'Carbono', mass: 12.011, conf: '[He] 2s² 2p²', fam: 'Não-metal', col: 14, row: 2 },
+            { z: 7, sym: 'N', name: 'Nitrogênio', mass: 14.007, conf: '[He] 2s² 2p³', fam: 'Não-metal', col: 15, row: 2 },
+            { z: 8, sym: 'O', name: 'Oxigênio', mass: 15.999, conf: '[He] 2s² 2p⁴', fam: 'Não-metal', col: 16, row: 2 },
+            { z: 9, sym: 'F', name: 'Flúor', mass: 18.998, conf: '[He] 2s² 2p⁵', fam: 'Halogênio', col: 17, row: 2 },
+            { z: 10, sym: 'Ne', name: 'Neônio', mass: 20.180, conf: '[He] 2s² 2p⁶', fam: 'Gás Nobre', col: 18, row: 2 },
+            { z: 11, sym: 'Na', name: 'Sódio', mass: 22.990, conf: '[Ne] 3s¹', fam: 'Metal Alcalino', col: 1, row: 3 },
+            { z: 12, sym: 'Mg', name: 'Magnésio', mass: 24.305, conf: '[Ne] 3s²', fam: 'Alcalinoterroso', col: 2, row: 3 },
+            { z: 17, sym: 'Cl', name: 'Cloro', mass: 35.45, conf: '[Ne] 3s² 3p⁵', fam: 'Halogênio', col: 17, row: 3 }
+        ];
+
+        const ptGrid = document.getElementById('pt-grid');
+        ptData.forEach(el => {
+            const div = document.createElement('div');
+            div.className = 'pt-element';
+            div.style.gridColumn = el.col;
+            div.style.gridRow = el.row;
+            div.innerHTML = `<div class="pt-number">${el.z}</div><div class="pt-symbol">${el.sym}</div>`;
+            div.onclick = () => {
+                document.querySelectorAll('.pt-element').forEach(e => e.classList.remove('active-el'));
+                div.classList.add('active-el');
+                document.getElementById('pt-detail-name').innerText = `${el.sym} - ${el.name}`;
+                document.getElementById('pt-detail-info').innerHTML = `
+                    <b>Número Atômico (Z):</b> ${el.z}<br>
+                    <b>Massa Atômica:</b> ${el.mass} u<br>
+                    <b>Família:</b> ${el.fam}<br>
+                    <b>Distribuição:</b> ${el.conf}
+                `;
+            };
+            ptGrid.appendChild(div);
+        });
+
+        const molMasses = { H: 1, He: 4, C: 12, N: 14, O: 16, F: 19, Na: 23, Mg: 24.3, Al: 27, Si: 28, P: 31, S: 32, Cl: 35.5, K: 39, Ca: 40 };
+        const fInput = document.getElementById('mol-formula');
+        const mInput = document.getElementById('mol-gramas');
+        const molInput = document.getElementById('mol-mols');
+        const mmDisplay = document.getElementById('mol-mass-display');
+        const mcInput = document.getElementById('mol-molecs');
+
+        function calcMolarMass(formula) {
+            const regex = /([A-Z][a-z]*)(\d*)/g;
+            let match, mass = 0;
+            while ((match = regex.exec(formula)) !== null) {
+                const el = match[1];
+                const qtd = match[2] ? parseInt(match[2]) : 1;
+                if (molMasses[el]) mass += molMasses[el] * qtd;
+            }
+            return mass;
+        }
+
+        function updateEsteq(source) {
+            const mm = calcMolarMass(fInput.value);
+            mmDisplay.innerText = mm > 0 ? mm.toFixed(2) : "0.00";
+            if(mm === 0) return;
+
+            if(source === 'mass' || source === 'form') {
+                const g = parseFloat(mInput.value) || 0;
+                const m = g / mm;
+                molInput.value = m.toFixed(4);
+                mcInput.value = (m * 6.022e23).toExponential(3);
+            } else if(source === 'mol') {
+                const m = parseFloat(molInput.value) || 0;
+                mInput.value = (m * mm).toFixed(2);
+                mcInput.value = (m * 6.022e23).toExponential(3);
+            }
+        }
+        fInput.addEventListener('input', () => updateEsteq('form'));
+        mInput.addEventListener('input', () => updateEsteq('mass'));
+        molInput.addEventListener('input', () => updateEsteq('mol'));
+
+        const sbCanvas = document.getElementById('canvas-sandbox');
+        const sbCtx = sbCanvas.getContext('2d');
+        const sbList = document.getElementById('sb-list');
+        const sbStatus = document.getElementById('sb-status');
+        
+        let beakerContents = [];
+
+        const sandboxHnd = {
+            add() {
+                const val = document.getElementById('sb-select').value;
+                const text = document.getElementById('sb-select').options[document.getElementById('sb-select').selectedIndex].text;
+                beakerContents.push({ id: val, name: text });
+                this.update();
+            },
+            clear() {
+                beakerContents = [];
+                this.update();
+            },
+            update() {
+                sbList.innerHTML = beakerContents.length === 0 ? "Nenhum" : beakerContents.map(i => `<li>- ${i.name}</li>`).join('');
+                this.draw();
+            },
+            draw() {
+                resizeCanvas(sbCanvas);
+                const w = sbCanvas.width, h = sbCanvas.height;
+                sbCtx.clearRect(0, 0, w, h);
+
+                sbCtx.strokeStyle = "rgba(255,255,255,0.5)";
+                sbCtx.lineWidth = 4;
+                sbCtx.beginPath();
+                sbCtx.moveTo(w*0.3, 50); sbCtx.lineTo(w*0.3, h-50); 
+                sbCtx.arcTo(w*0.3, h-30, w*0.4, h-30, 20);
+                sbCtx.lineTo(w*0.7 - 20, h-30);
+                sbCtx.arcTo(w*0.7, h-30, w*0.7, h-50, 20);
+                sbCtx.lineTo(w*0.7, 50);
+                sbCtx.stroke();
+
+                if(beakerContents.length === 0) {
+                    sbStatus.innerText = "Vazio";
+                    return;
+                }
+
+                const has = (id) => beakerContents.some(i => i.id === id);
+                let state = "Mistura Simples";
+                let color = "rgba(33, 150, 243, 0.4)"; 
+                let isHetero = false;
+                let heteroColor = "";
+
+                if(has('agua') && has('oleo')) {
+                    state = "Heterogênea (2 Fases)";
+                    isHetero = true;
+                    heteroColor = "rgba(255, 193, 7, 0.7)";
+                } else if(has('hcl') && has('naoh')) {
+                    state = "Reação de Neutralização! (Sal + H₂O)";
+                    color = "rgba(255, 255, 255, 0.2)"; 
+                    
+                    sbCtx.fillStyle = "rgba(255,255,255,0.8)";
+                    for(let i=0; i<20; i++){
+                        sbCtx.beginPath();
+                        sbCtx.arc(w*0.35 + Math.random()*(w*0.3), h-40 - Math.random()*100, Math.random()*4, 0, Math.PI*2);
+                        sbCtx.fill();
+                    }
+                } else if(has('agua') && (has('alcool') || has('sal'))) {
+                    state = "Homogênea (1 Fase)";
+                    color = "rgba(3, 169, 244, 0.5)"; 
+                } else if(has('oleo')) {
+                    color = "rgba(255, 193, 7, 0.7)"; 
+                } else if(has('hcl') || has('naoh')) {
+                    color = "rgba(224, 224, 224, 0.3)"; 
+                }
+                sbStatus.innerText = state;
+
+                sbCtx.fillStyle = color;
+                sbCtx.fillRect(w*0.3 + 2, h-120, w*0.4 - 4, 90);
+
+                if(isHetero) {
+                    sbCtx.fillStyle = heteroColor; 
+                    sbCtx.fillRect(w*0.3 + 2, h-170, w*0.4 - 4, 50);
+                }
+            }
+        };
+        window.addEventListener('load', () => {
+            drawAtom();
+            drawGeometry();
+            drawEnthalpy();
+            sandboxHnd.draw();
+        });
+    </script>
+</body>
+</html>
